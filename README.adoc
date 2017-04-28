@@ -1,0 +1,42 @@
+= Spring Data extensions
+
+This project aims to collect all useful extensions for Spring Data framework in one place.
+
+For now it contains only SelectionSpecification extension. But more will be added soon.
+
+Also, your contributions in any forms are highly welcome.
+
+== List of available extensions
+=== Selection Specification
+Allows you to control select statement when you use JPA Criteria API wrapper from Spring Data JPA so called
+Specification.
+
+Example:
+....
+    private static class FooDtoSelection implements SelectionSpecification<FooBar, FooDto> {
+
+        @Override
+        public Selection<FooDto> toSelection(Root<FooBar> root, CriteriaQuery<? extends FooDto> query, CriteriaBuilder cb) {
+          return cb.construct(FooDto.class, root.get(FooBar_.foo));
+        }
+
+        @Override
+        public Class<FooDto> getResultClass() {
+          return FooDto.class;
+        }
+      }
+....
+And then somewhere in  service code code
+....
+FooDto dto = repo.findOne(barEquals(1), new FooDtoSelection());
+....
+
+Full version of this example is available in SelectionSpecificationTest.
+
+== Usage
+For now you can include code as module in your maven or gradle project,
+but it will be available in maven repositories soon.
+
+
+
+
